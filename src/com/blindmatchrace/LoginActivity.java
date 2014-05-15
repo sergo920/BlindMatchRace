@@ -315,12 +315,6 @@ public class LoginActivity extends Activity {
 				if (adminRequest) {
 					adminRequest = false;
 					intent = new Intent(LoginActivity.this, SetTimeDateActivity.class);
-					intent.putExtra(C.USER_NAME, mUser);
-					intent.putExtra(C.USER_PASS, mPassword);
-					intent.putExtra(C.EVENT_NUM, mEvent);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(intent);
-					finish();
 				}
 				else if (registerRequest) {
 					registerRequest = false;
