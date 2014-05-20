@@ -2,6 +2,8 @@ package com.blindmatchrace;
 
 import java.io.IOException;
 
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -270,9 +272,13 @@ public class LoginActivity extends Activity {
 	 * the user.
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
+    
+		
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
+		
+			
 			if (mUser.equals("Sailoradmin") || mUser.equals("SailorAdmin")) {
 				adminRequest = true;
 				return mPassword.equals("admin") || mPassword.equals("Admin");
@@ -292,6 +298,7 @@ public class LoginActivity extends Activity {
 					if (jsonObj.getString("event").equals(mEvent))
 						return true;
 				}
+				
 			}
 			catch (JSONException e) {
 				Log.i(name, "JSONException");
@@ -345,7 +352,6 @@ public class LoginActivity extends Activity {
 					spEdit.putString(C.PREFS_FULL_USER_NAME, fullUserName);
 					spEdit.commit();
 				}
-
 				intent.putExtra(C.USER_NAME, mUser);
 				intent.putExtra(C.USER_PASS, mPassword);
 				intent.putExtra(C.EVENT_NUM, mEvent);

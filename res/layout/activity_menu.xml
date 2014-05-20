@@ -16,7 +16,7 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="30"
-        android:src="@drawable/icon_256" />
+        android:src="@drawable/icon_mainfest" />
 
     <TextView
         android:id="@+id/tvTitle"
