@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 
 
+
 import com.blindmatchrace.classes.C;
 import com.blindmatchrace.classes.SendDataHThread;
 import com.google.android.gms.maps.CameraUpdate;
@@ -14,6 +15,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 
 
 
@@ -46,6 +48,7 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 	private boolean disableLocation = false;
 
 	// Views.
+
 	private Marker currentPosition;
 	private GoogleMap googleMap;
 	private TextView tvLat, tvLng, tvUser, tvSpeed, tvDirection, tvEvent;
@@ -94,6 +97,7 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 		googleMap.animateCamera(cameraUpdate);
 
 		// Initializing TextViews and Buttons.
+		
 		tvLat = (TextView) findViewById(R.id.tvLat);
 		tvLng = (TextView) findViewById(R.id.tvLng);
 		tvSpeed = (TextView) findViewById(R.id.tvSpeed);
@@ -262,6 +266,9 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 
 		// Adds a buoy on the map.
 		LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
-		googleMap.addMarker(new MarkerOptions().position(latLng).title(fullBuoyName.split("_")[0]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_buoy_low)));
+		if(fullBuoyName.startsWith(C.START_PREFIX))
+		googleMap.addMarker(new MarkerOptions().position(latLng).title(fullBuoyName.split("_")[0]).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag_finish)));	
+		
+		else googleMap.addMarker(new MarkerOptions().position(latLng).title(fullBuoyName.split("_")[0]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_buoy_low)));
 	}
 }

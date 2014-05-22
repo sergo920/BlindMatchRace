@@ -25,10 +25,11 @@ import android.widget.TimePicker;
 public class SetTimeDateActivity extends Activity implements OnClickListener {
 
 	// Widget GUI
+	private EditText etEvent;
 	private Button bCalendar, bTimePicker,bSet;
 	private EditText txtDate, txtTime;
 
-	private String user,event;
+	private String user;
 	// Variable for storing current date and time
 
 	/** Called when the activity is first created. */
@@ -36,9 +37,9 @@ public class SetTimeDateActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settimedate);
-
+       
+		etEvent = (EditText) findViewById(R.id.etEvent);
 		user = getIntent().getStringExtra(C.USER_NAME);
-		event = getIntent().getStringExtra(C.EVENT_NUM);
 		
 		bSet = (Button) findViewById(R.id.bSet);
 		bCalendar = (Button) findViewById(R.id.bCalendar);
@@ -101,7 +102,7 @@ public class SetTimeDateActivity extends Activity implements OnClickListener {
 		if (v==bSet){
 			Intent intent = new Intent(this, AdminActivity.class);
 			intent.putExtra(C.USER_NAME, user);
-			intent.putExtra(C.EVENT_NUM, event);
+			intent.putExtra(C.EVENT_NUM,etEvent.getText().toString());
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			finish();

@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 	private String user = "", pass = "", event = "", fullUserName = "";
 	private LocationManager locationManager;
 	private Circle[] buoyRadiuses = new Circle[C.MAX_BUOYS];
-	private MediaPlayer buoyBeep;
+	private MediaPlayer buoyBeep,turn_left,turn_right;
 	private boolean disableLocation = false;
 
 	// Views.
@@ -106,6 +106,8 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 
 		// Loads the buoy warning beep sound.
 		buoyBeep = MediaPlayer.create(this, R.raw.buoy_warning_beep);
+		turn_left = MediaPlayer.create(this, R.raw.turn_left);
+		turn_right = MediaPlayer.create(this, R.raw.turn_right);
 
 		// AsyncTask for getting the buoy's locations from DB and adding them to the google map.
 		GetBuoysTask getBuoys = new GetBuoysTask("GetBuoysTask", googleMap, buoyRadiuses, event);

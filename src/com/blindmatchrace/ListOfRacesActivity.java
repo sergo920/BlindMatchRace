@@ -4,16 +4,24 @@ package com.blindmatchrace;
 
 
 import java.io.IOException;
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.blindmatchrace.classes.C;
+import com.blindmatchrace.classes.SendDataHThread;
 import com.blindmatchrace.modules.JsonReader;
+
+
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Process;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +34,7 @@ import android.widget.Button;
  */
 public class ListOfRacesActivity extends Activity {
 
+	
 	private String user = "", pass = "";
 	private Button bRace1, bRace2, bRace3, bRace4, bRace5;
 
@@ -61,6 +70,7 @@ public class ListOfRacesActivity extends Activity {
 		bRace3 = (Button) findViewById(R.id.bRace3);
 		bRace4 = (Button) findViewById(R.id.bRace4);
 		bRace5 = (Button) findViewById(R.id.bRace5);
+		
 
 		bRace1.setOnClickListener(new View.OnClickListener() {
 			
@@ -146,7 +156,6 @@ public class ListOfRacesActivity extends Activity {
    					
    						String event = jsonObj.getString("event");
    						
-   						
    						temp[count]=event;
    						count++;
    					
@@ -166,7 +175,31 @@ public class ListOfRacesActivity extends Activity {
    	}
    	 protected void onPostExecute(String temp) {
    		 pDialog.dismiss();
-   		Intent intent =new Intent(ListOfRacesActivity.this,MenuActivity.class);
+   	// HandlerThread for creating a new user in the DB through thread.
+   		if (!user.equals("Sailoradmin") && !user.equals("SailorAdmin")) {
+			// Updates the SharedPreferences.
+			SharedPreferences.Editor spEdit = LoginActivity.sp.edit();
+			String fullUserName = user + "_" + pass + "_" + temp;
+			spEdit.putString(C.PREFS_FULL_USER_NAME, fullUserName);
+			spEdit.commit();
+		}
+   		 
+   		 
+   		 
+   		SendDataHThread thread = new SendDataHThread("CreateNewUser");
+	    thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.setFullUserName(user + "_" + pass + "_" + temp);
+	    thread.setEvent(temp);
+		thread.setLat("0");
+		thread.setLng("0");
+		thread.setSpeed("0");
+		thread.setBearing("0");
+
+		thread.start();
+
+   		 
+   		 
+   		 Intent intent =new Intent(ListOfRacesActivity.this,MenuActivity.class);
    		intent.putExtra(C.USER_NAME, user);
 		intent.putExtra(C.USER_PASS, pass);
 		intent.putExtra(C.EVENT_NUM, temp);
@@ -176,6 +209,7 @@ public class ListOfRacesActivity extends Activity {
 
    		    	 }
    }
+
 }
 	
 	

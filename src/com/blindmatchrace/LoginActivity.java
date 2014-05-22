@@ -2,14 +2,12 @@ package com.blindmatchrace;
 
 import java.io.IOException;
 
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.blindmatchrace.classes.C;
-import com.blindmatchrace.classes.SendDataHThread;
+
 import com.blindmatchrace.modules.JsonReader;
 
 import android.animation.Animator;
@@ -22,7 +20,7 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -50,17 +48,17 @@ public class LoginActivity extends Activity {
 	private boolean registerRequest = false;
 
 	// SharedPreferences used for loading the latest user.
-	private SharedPreferences sp;
+	public static SharedPreferences sp;
 
 	// Values for user, password and event at the time of the login attempt.
 	private String mUser;
 	private String mPassword;
-	private String mEvent;
+	//private String mEvent="0";
 
 	// UI references.
 	private EditText etUser;
 	private EditText etPass;
-	private EditText etEvent;
+	//private EditText etEvent;
 	private View svLoginForm;
 	private View llLoginStatus;
 	private TextView tvLoginStatusMessage;
@@ -86,7 +84,7 @@ public class LoginActivity extends Activity {
 		sp = getSharedPreferences(C.PREFS_USER, MODE_PRIVATE); 
 		String fullUserName = sp.getString(C.PREFS_FULL_USER_NAME, "Anonymous");
 		if (fullUserName != null && !fullUserName.equals("Anonymous")) {
-			Intent intent = new Intent(LoginActivity.this, ListOfRacesActivity.class);
+			Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
 			String user = fullUserName.split("_")[0];
 			String pass = fullUserName.split("_")[1];
 			String event = fullUserName.split("_")[2];
@@ -118,7 +116,7 @@ public class LoginActivity extends Activity {
 				return false;
 			}
 		});
-		etEvent = (EditText) findViewById(R.id.etEvent);
+		//etEvent = (EditText) findViewById(R.id.etEvent);
 
 		svLoginForm = findViewById(R.id.svLoginForm);
 		llLoginStatus = findViewById(R.id.llLoginStatus);
@@ -169,12 +167,12 @@ public class LoginActivity extends Activity {
 		// Reset errors.
 		etUser.setError(null);
 		etPass.setError(null);
-		etEvent.setError(null);
+		//etEvent.setError(null);
 
 		// Store values at the time of the login attempt.
 		mUser = C.SAILOR_PREFIX + etUser.getText().toString();
 		mPassword = etPass.getText().toString();
-		mEvent = etEvent.getText().toString();
+		//mEvent = etEvent.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
@@ -202,11 +200,11 @@ public class LoginActivity extends Activity {
 		}
 
 		// Check for a valid event.
-		if (TextUtils.isEmpty(mEvent)) {
+		/*if (TextUtils.isEmpty(mEvent)) {
 			etEvent.setError(getString(R.string.error_field_required));
 			focusView = etEvent;
 			cancel = true;
-		}
+		}*/
 
 		if (cancel) {
 			// There was an error; don't attempt login and focus the first
@@ -272,13 +270,9 @@ public class LoginActivity extends Activity {
 	 * the user.
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-    
-		
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
-		
-			
 			if (mUser.equals("Sailoradmin") || mUser.equals("SailorAdmin")) {
 				adminRequest = true;
 				return mPassword.equals("admin") || mPassword.equals("Admin");
@@ -291,15 +285,17 @@ public class LoginActivity extends Activity {
 			String name = "UserLoginTask";
 			try {
 				// Gets the user data from DB and checks if the user's data match.
-				JSONObject json = JsonReader.readJsonFromUrl(C.URL_CLIENTS_TABLE + "&Information=" + mUser + "_" + mPassword + "_" + mEvent);
+				JSONObject json = JsonReader.readJsonFromUrl(C.URL_CLIENTS_TABLE);// + "&Information=" + mUser + "_" + mPassword + "_" + mEvent);
 				JSONArray jsonArray = json.getJSONArray("positions");
-				if (jsonArray.length() > 0) {
-					JSONObject jsonObj = (JSONObject) jsonArray.get(0);
-					if (jsonObj.getString("event").equals(mEvent))
-						return true;
-				}
-				
-			}
+				for(int i=0;i<jsonArray.length();i++){
+				//if (jsonArray.length() > 0) {
+					JSONObject jsonObj = (JSONObject) jsonArray.get(i);
+					//if (jsonObj.getString("event").equals(mEvent))
+					if(jsonObj.getString("info").startsWith("Sailor"+mUser+"_"+mPassword)){	
+					return true;
+    						}
+    				}
+    		}
 			catch (JSONException e) {
 				Log.i(name, "JSONException");
 				return false;
@@ -327,17 +323,17 @@ public class LoginActivity extends Activity {
 					registerRequest = false;
 
 					// HandlerThread for creating a new user in the DB through thread.
-					SendDataHThread thread = new SendDataHThread("CreateNewUser");
-					thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+					//SendDataHThread thread = new SendDataHThread("CreateNewUser");
+					//thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
-					thread.setFullUserName(mUser + "_" + mPassword + "_" + mEvent);
-					thread.setEvent(mEvent);
-					thread.setLat("0");
-					thread.setLng("0");
-					thread.setSpeed("0");
-					thread.setBearing("0");
+					//thread.setFullUserName(mUser + "_" + mPassword + "_" + mEvent);
+					//thread.setEvent(mEvent);
+					//thread.setLat("0");
+					//thread.setLng("0");
+					//thread.setSpeed("0");
+				//	thread.setBearing("0");
 
-					thread.start();
+					//thread.start();
 
 					intent = new Intent(LoginActivity.this, ListOfRacesActivity.class);
 				}
@@ -345,24 +341,25 @@ public class LoginActivity extends Activity {
 					intent = new Intent(LoginActivity.this, ListOfRacesActivity.class);
 				}
 
-				if (!mUser.equals("Sailoradmin") && !mUser.equals("SailorAdmin")) {
+			/*	if (!mUser.equals("Sailoradmin") && !mUser.equals("SailorAdmin")) {
 					// Updates the SharedPreferences.
 					SharedPreferences.Editor spEdit = sp.edit();
 					String fullUserName = mUser + "_" + mPassword + "_" + mEvent;
 					spEdit.putString(C.PREFS_FULL_USER_NAME, fullUserName);
 					spEdit.commit();
-				}
+				}*/
+
 				intent.putExtra(C.USER_NAME, mUser);
 				intent.putExtra(C.USER_PASS, mPassword);
-				intent.putExtra(C.EVENT_NUM, mEvent);
+				//intent.putExtra(C.EVENT_NUM, mEvent);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 				finish();
 			}
 			else {
 				etPass.setError(getString(R.string.error_incorrect_pass_event));
-				etEvent.setError(getString(R.string.error_incorrect_pass_event));
-				etEvent.requestFocus();
+				//etEvent.setError(getString(R.string.error_incorrect_pass_event));
+				//etEvent.requestFocus();
 			}
 		}
 
