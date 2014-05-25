@@ -54,7 +54,7 @@ public class GetBuoysTask extends AsyncTask<String, Integer, Map<String, LatLng>
 			int countBouy = 0;
 			for (int i = 0; i < jsonArray.length() && countBouy < C.MAX_BUOYS; i++) {
 				JSONObject jsonObj = (JSONObject) jsonArray.get(i);
-				if (jsonObj.getString("info").startsWith(C.BUOY_PREFIX)) {
+				if (jsonObj.getString("info").startsWith(C.BUOY_PREFIX)||jsonObj.getString("info").startsWith(C.START_PREFIX)) {
 					if (jsonObj.getString("event").equals(event)) {
 						countBouy++;
 						String buoyName = jsonObj.getString("info").split("_")[0];

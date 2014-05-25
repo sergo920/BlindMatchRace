@@ -10,17 +10,11 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-
-
-
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.blindmatchrace.modules.JsonReader;
 import com.google.android.gms.maps.model.LatLng;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -121,7 +115,8 @@ public class SaveKmlTask extends AsyncTask<String, Integer, Map<Long, LatLng>> {
 				kmlBuilder.append("\t\t\t<Icon>\n\t\t\t\t<href>http://maps.google.com/mapfiles/kml/paddle/red-stars.png</href>\n\t\t\t</Icon>\n\t\t</IconStyle>\n\t</Style>\n");
 
 				// Starting time stamp.
-				kmlBuilder.append("\t<Placemark>\n\t\t<name>FROM</name>\n\t\t<TimeStamp>\n");
+				kmlBuilder.append("\t<Placemark>\n\t\t<name>Start</name>\n\t");
+				kmlBuilder.append("\t<description>Starting point of the race </description>\n\t\t<TimeStamp>\n");
 				long starttime = entry.getKey();
 				kmlBuilder.append("\t\t\t<when>" + String.valueOf(starttime) + "</when>\n\t\t</TimeStamp>\n");
 				kmlBuilder.append("\t\t<styleUrl>#style1</styleUrl>\n\t\t<Point>\n\t\t\t<coordinates>");
@@ -150,7 +145,7 @@ public class SaveKmlTask extends AsyncTask<String, Integer, Map<Long, LatLng>> {
 				}
 
 				// Inserts the latest time stamp.
-				kmlBuilder.append("\t<Placemark>\n\t\t<name>TO</name>\n\t\t<TimeStamp>\n");
+				kmlBuilder.append("\t<Placemark>\n\t\t<name>Finish</name>\n\t\t<TimeStamp>\n");
 				long time = entry.getKey();
 				kmlBuilder.append("\t\t\t<when>" + String.valueOf(time) + "</when>\n\t\t</TimeStamp>\n");
 				kmlBuilder.append("\t\t<styleUrl>#style3</styleUrl>\n\t\t<Point>\n\t\t\t<coordinates>");
@@ -206,10 +201,10 @@ public class SaveKmlTask extends AsyncTask<String, Integer, Map<Long, LatLng>> {
 				kmlBuilder.append("\t<name>Path</name>\n\t<description><![CDATA[]]></description>\n");
 				kmlBuilder.append("\t<Style id=\"style3\">\n\t\t<IconStyle>\n\t\t\t<Icon>\n\t\t\t\t<href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href>\n");
 				kmlBuilder.append("\t\t\t</Icon>\n\t\t</IconStyle>\n\t</Style>\n\t<Style id=\"style2\">\n");
-				kmlBuilder.append("\t\t<LineStyle>\n\t\t\t<color>73FF0000</color>\n\t\t\t<width>5</width>\n");
+				kmlBuilder.append("\t\t<LineStyle>\n\t\t\t<color>501400FF</color>\n\t\t\t<width>5</width>\n");
 				kmlBuilder.append("\t\t</LineStyle>\n\t</Style>\n\t<Style id=\"style1\">\n\t\t<IconStyle>\n");
 				kmlBuilder.append("\t\t\t<Icon>\n\t\t\t\t<href>http://maps.google.com/mapfiles/kml/paddle/red-stars.png</href>\n\t\t\t</Icon>\n\t\t</IconStyle>\n\t</Style>\n");
-				kmlBuilder.append("\t<Placemark>\n\t\t<name>FROM</name>\n\t\t<styleUrl>#style3</styleUrl>\n\t\t<Point>\n\t\t\t<coordinates>");
+				kmlBuilder.append("\t<Placemark>\n\t\t<name>Start</name>\n\t\t<styleUrl>#style3</styleUrl>\n\t\t<Point>\n\t\t\t<coordinates>");
 
 				// Starting coordinate.
 				Map.Entry<Long, LatLng> entry = (Map.Entry<Long, LatLng>) iter.next();
@@ -232,7 +227,7 @@ public class SaveKmlTask extends AsyncTask<String, Integer, Map<Long, LatLng>> {
 					kmlBuilder.append("\t\t\t\t" + String.valueOf(lng) + "," + String.valueOf(lat) + ",0.000000\n");
 				}
 				kmlBuilder.append("\t\t\t</coordinates>\n\t\t</LineString>\n\t</Placemark>\n");
-				kmlBuilder.append("\t<Placemark>\n\t\t<name>TO</name>\n\t\t<styleUrl>#style1</styleUrl>\n\t\t<Point>\n\t\t\t<coordinates>");
+				kmlBuilder.append("\t<Placemark>\n\t\t<name>Finish</name>\n\t\t<styleUrl>#style1</styleUrl>\n\t\t<Point>\n\t\t\t<coordinates>");
 
 				// Inserts the latest destination reached.
 				double lat = entry.getValue().latitude;

@@ -65,8 +65,14 @@
 
 	<Button
 	    android:id="@+id/bSet"
-	    android:layout_width="wrap_content"
+	    android:layout_width="66dp"
 	    android:layout_height="wrap_content"
 	    android:text="Set" />
+
+	<Button
+	    android:id="@+id/bDone"
+	    android:layout_width="66dp"
+	    android:layout_height="wrap_content"
+	    android:text="Done" />
 
 </LinearLayout>

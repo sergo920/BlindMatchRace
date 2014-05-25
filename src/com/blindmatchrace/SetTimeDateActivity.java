@@ -25,8 +25,9 @@ import android.widget.TimePicker;
 public class SetTimeDateActivity extends Activity implements OnClickListener {
 
 	// Widget GUI
+	private String date,time;
 	private EditText etEvent;
-	private Button bCalendar, bTimePicker,bSet;
+	private Button bCalendar, bTimePicker,bSet,bDone;
 	private EditText txtDate, txtTime;
 
 	private String user;
@@ -41,6 +42,7 @@ public class SetTimeDateActivity extends Activity implements OnClickListener {
 		etEvent = (EditText) findViewById(R.id.etEvent);
 		user = getIntent().getStringExtra(C.USER_NAME);
 		
+		bDone = (Button) findViewById(R.id.bDone);
 		bSet = (Button) findViewById(R.id.bSet);
 		bCalendar = (Button) findViewById(R.id.bCalendar);
 		bTimePicker = (Button) findViewById(R.id.bTimePicker);
@@ -48,6 +50,7 @@ public class SetTimeDateActivity extends Activity implements OnClickListener {
 		txtDate = (EditText) findViewById(R.id.txtDate);
 		txtTime = (EditText) findViewById(R.id.txtTime);
         
+		bDone.setOnClickListener(this);
 		bSet.setOnClickListener(this);
 		bCalendar.setOnClickListener(this);
 		bTimePicker.setOnClickListener(this);
@@ -100,12 +103,27 @@ public class SetTimeDateActivity extends Activity implements OnClickListener {
 			tpd.show();
 		}
 		if (v==bSet){
+			date = txtDate.getText().toString();
+			time = txtTime.getText().toString();
 			Intent intent = new Intent(this, AdminActivity.class);
 			intent.putExtra(C.USER_NAME, user);
 			intent.putExtra(C.EVENT_NUM,etEvent.getText().toString());
+			intent.putExtra(C.Date, date);
+			intent.putExtra(C.Time, time);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			finish();
 		}
+		if (v==bDone){
+			finish();
+		}
+	}
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+
+		// Disables the location changed code.
+		Intent intent=new Intent (this,LoginActivity.class);
+		startActivity(intent);
 	}
 }

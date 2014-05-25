@@ -45,7 +45,7 @@ public class LoginActivity extends Activity {
 
 	// Indicates requested login.
 	private boolean adminRequest = false;
-	private boolean registerRequest = false;
+	public static boolean registerRequest = false;
 
 	// SharedPreferences used for loading the latest user.
 	public static SharedPreferences sp;
@@ -270,7 +270,7 @@ public class LoginActivity extends Activity {
 	 * the user.
 	 */
 	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
+        
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			if (mUser.equals("Sailoradmin") || mUser.equals("SailorAdmin")) {
@@ -291,7 +291,7 @@ public class LoginActivity extends Activity {
 				//if (jsonArray.length() > 0) {
 					JSONObject jsonObj = (JSONObject) jsonArray.get(i);
 					//if (jsonObj.getString("event").equals(mEvent))
-					if(jsonObj.getString("info").startsWith("Sailor"+mUser+"_"+mPassword)){	
+					if(jsonObj.getString("info").startsWith(mUser+"_"+mPassword)){	
 					return true;
     						}
     				}
@@ -319,8 +319,8 @@ public class LoginActivity extends Activity {
 					adminRequest = false;
 					intent = new Intent(LoginActivity.this, SetTimeDateActivity.class);
 				}
-				else if (registerRequest) {
-					registerRequest = false;
+				//else if (registerRequest) {
+				//	registerRequest = false;
 
 					// HandlerThread for creating a new user in the DB through thread.
 					//SendDataHThread thread = new SendDataHThread("CreateNewUser");
@@ -335,8 +335,8 @@ public class LoginActivity extends Activity {
 
 					//thread.start();
 
-					intent = new Intent(LoginActivity.this, ListOfRacesActivity.class);
-				}
+					//intent = new Intent(LoginActivity.this, ListOfRacesActivity.class);
+				//}
 				else {
 					intent = new Intent(LoginActivity.this, ListOfRacesActivity.class);
 				}

@@ -34,31 +34,19 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="10"
-        android:text="Race Track 1" />
+        android:text="Random Race" />
 
-    <Button
-        android:id="@+id/bRace2"
+   
+    
+    <EditText
+        android:id="@+id/etEvent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="10"
-        android:text="Race Track 2" />
-
-    <Button
-        android:id="@+id/bRace3"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="10"
-        android:text="Race Track 3" />
-
-    <Button
-        android:id="@+id/bRace4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="10"
-        android:text="Race Track 4" />
+        android:hint="@string/prompt_event"
+        android:inputType="numberDecimal"
+         />
 
     <Button
         android:id="@+id/bRace5"
@@ -66,6 +54,8 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="10"
-        android:text="Race Track 5" />
+        android:text="Get Event" />
+
+   
 
 </LinearLayout>

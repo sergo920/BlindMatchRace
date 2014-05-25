@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 
 
 
+
 import com.blindmatchrace.classes.C;
 import com.blindmatchrace.classes.SendDataHThread;
 import com.google.android.gms.maps.CameraUpdate;
@@ -19,7 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 
 
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.location.Criteria;
 import android.location.Location;
@@ -46,12 +49,13 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 	private LocationManager locationManager;
 	private boolean firstUse = true;
 	private boolean disableLocation = false;
+	private String date,time;
 
 	// Views.
 
 	private Marker currentPosition;
 	private GoogleMap googleMap;
-	private TextView tvLat, tvLng, tvUser, tvSpeed, tvDirection, tvEvent;
+	private TextView tvLat, tvLng,tvSpeed, tvDirection, tvEvent,tvDateTime;
 	private Button Start, bBuoy2, bBuoy3, bBuoy4, bBuoy5, bBuoy6, bBuoy7, bBuoy8, bBuoy9, bBuoy10;
 
 	@Override
@@ -76,6 +80,8 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 		// The user name and event number connected to the application.
 		user = getIntent().getStringExtra(C.USER_NAME);
 		event = getIntent().getStringExtra(C.EVENT_NUM);
+		date = getIntent().getStringExtra(C.Date);
+		time = getIntent().getStringExtra(C.Time);
 
 		// Initialize location ability.
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -98,15 +104,15 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 
 		// Initializing TextViews and Buttons.
 		
+		tvDateTime = (TextView) findViewById(R.id.tvDateTime);
 		tvLat = (TextView) findViewById(R.id.tvLat);
 		tvLng = (TextView) findViewById(R.id.tvLng);
 		tvSpeed = (TextView) findViewById(R.id.tvSpeed);
 		tvDirection = (TextView) findViewById(R.id.tvDirection);
-		tvUser = (TextView) findViewById(R.id.tvUser);
 		tvEvent = (TextView) findViewById(R.id.tvEvent);
-		tvUser.setText(user.substring(6));
 		tvEvent.setText(event);
-        
+		tvDateTime.setText(date+"_"+time);
+		
 		Start = (Button) findViewById(R.id.Start);
 		bBuoy2 = (Button) findViewById(R.id.bBuoy2);
 		bBuoy3 = (Button) findViewById(R.id.bBuoy3);
@@ -135,8 +141,9 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 		super.onBackPressed();
 
 		// Disables the location changed code.
-		disableLocation = true;
-		finish();
+		Intent intent=new Intent (this,SetTimeDateActivity.class);
+		intent.putExtra(C.USER_NAME, user);
+		startActivity(intent);
 	}
 
 	@Override
@@ -167,6 +174,7 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 			tvLng.setText(lng);
 			tvSpeed.setText(speed);
 			tvDirection.setText(bearing);
+			
 
 			// Adds currentPosition marker to the google map.
 			LatLng latLng = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
@@ -254,13 +262,13 @@ public class AdminActivity extends FragmentActivity implements LocationListener,
 		String lng = new DecimalFormat("##.######").format(currentPosition.getPosition().longitude);
 		String speed = "" + 0;
 		String bearing = "" + 0;
-
+        
 		thread.setFullUserName(fullBuoyName);
 		thread.setLat(lat);
 		thread.setLng(lng);
 		thread.setSpeed(speed);
 		thread.setBearing(bearing);
-		thread.setEvent(event);
+		thread.setEvent(event+"_"+date+"_"+time);
 
 		thread.start();
 

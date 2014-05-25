@@ -3,7 +3,13 @@ package com.blindmatchrace;
 
 
 
+
 import java.io.IOException;
+
+
+
+
+
 
 
 import org.json.JSONArray;
@@ -13,6 +19,11 @@ import org.json.JSONObject;
 import com.blindmatchrace.classes.C;
 import com.blindmatchrace.classes.SendDataHThread;
 import com.blindmatchrace.modules.JsonReader;
+
+
+
+
+
 
 
 import android.os.AsyncTask;
@@ -26,18 +37,20 @@ import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 
 /**
  * Menu activity. Shows the menu screen.
  *
  */
-public class ListOfRacesActivity extends Activity {
+public class ListOfRacesActivity extends Activity implements OnClickListener {
 
 	
 	private String user = "", pass = "";
-	private Button bRace1, bRace2, bRace3, bRace4, bRace5;
-
+	private Button bRace1, bRace5;
+    private EditText etEvent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,71 +77,41 @@ public class ListOfRacesActivity extends Activity {
 		pass = getIntent().getStringExtra(C.USER_PASS);
 				
 		// Initializing Buttons.
-
+       
+		etEvent = (EditText) findViewById(R.id.etEvent);
 		bRace1 = (Button) findViewById(R.id.bRace1);
-		bRace2 = (Button) findViewById(R.id.bRace2);
-		bRace3 = (Button) findViewById(R.id.bRace3);
-		bRace4 = (Button) findViewById(R.id.bRace4);
 		bRace5 = (Button) findViewById(R.id.bRace5);
 		
 
-		bRace1.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-		         new GetEventsTask().execute(1);
-
-				
-			}
-		});
-		bRace2.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-		         new GetEventsTask().execute(2);
-
-				
-			}
-		});
-		bRace3.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-		         new GetEventsTask().execute(3);
-
-				
-			}
-		});
-		bRace4.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-		         new GetEventsTask().execute(4);
-
-				
-			}
-		});
-		bRace5.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-		         new GetEventsTask().execute(0);
-
-				
-			}
-		});
+		bRace1.setOnClickListener(this); 
+		bRace5.setOnClickListener(this);
+	}
+	
+	       @Override
+	       public void onClick(View v) {
+            switch (v.getId()) {
+				case R.id.bRace1:
+					new GetEventsTask().execute("random");
+					break;
+					
+                case R.id.bRace5:
+                	new GetEventsTask().execute(etEvent.getText().toString());
+					break;
+		   		}
+         }
+		
 		
 				
-	}
+	
 
+	
 
 	public void onBackPressed() {
 		super.onBackPressed();
 		finish();
 	}
 
-	
-	private class GetEventsTask extends AsyncTask<Integer, String, String> {
+	private class GetEventsTask extends AsyncTask<String, String, String> {
    	 private ProgressDialog pDialog;
        private String name;
        private int Rnum;
@@ -140,29 +123,37 @@ public class ListOfRacesActivity extends Activity {
            pDialog.setIndeterminate(false);
            pDialog.setCancelable(true);
            pDialog.show();
-           
+          
    	}
    	
    	@Override
-       protected String doInBackground(Integer... rn) {
+       protected String doInBackground(String... rn) {
    		String[] temp=new String[5];
    		int count=0;
    		try {
    			JSONObject json = JsonReader.readJsonFromUrl(C.URL_CLIENTS_TABLE);
    			JSONArray jsonArray = json.getJSONArray("positions");
+   			if(rn[0].equals("random")){
    			for (int i = 0; i < jsonArray.length()&&count<5; i++) {
    				JSONObject jsonObj = (JSONObject) jsonArray.get(i);
    				if (jsonObj.getString("info").startsWith("BuoyNum2")) {
-   					
-   						String event = jsonObj.getString("event");
-   						
-   						temp[count]=event;
-   						count++;
-   					
+   					String event = jsonObj.getString("event");
+   					temp[count]=event;
+   					count++;
+   				
    				}
    			}
-   			Rnum=rn[0];
+   			
+   			Rnum=0+(int)(Math.random()*(4-0)+1);
    			return temp[Rnum];
+   			}
+   			else{
+   				for (int i = 0; i < jsonArray.length(); i++) {
+   	   				JSONObject jsonObj = (JSONObject) jsonArray.get(i);
+   	   				if (jsonObj.getString("event").startsWith(rn[0]))
+   	   					return jsonObj.getString("event");
+   				}
+   			}
    		}
    		catch (JSONException e) {
    			Log.i(name, "JSONException");
@@ -172,11 +163,12 @@ public class ListOfRacesActivity extends Activity {
    			Log.i(name, "IOException");
    			return null;
    		}
+   		return null;
    	}
    	 protected void onPostExecute(String temp) {
    		 pDialog.dismiss();
-   	// HandlerThread for creating a new user in the DB through thread.
-   		if (!user.equals("Sailoradmin") && !user.equals("SailorAdmin")) {
+   	// HandlerThread for creating a new user in the DB through thread. 		 
+   		 if (!user.equals("Sailoradmin") && !user.equals("SailorAdmin")) {
 			// Updates the SharedPreferences.
 			SharedPreferences.Editor spEdit = LoginActivity.sp.edit();
 			String fullUserName = user + "_" + pass + "_" + temp;
@@ -184,8 +176,8 @@ public class ListOfRacesActivity extends Activity {
 			spEdit.commit();
 		}
    		 
-   		 
-   		 
+   		if(LoginActivity.registerRequest){
+   		LoginActivity.registerRequest = false;
    		SendDataHThread thread = new SendDataHThread("CreateNewUser");
 	    thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
         thread.setFullUserName(user + "_" + pass + "_" + temp);
@@ -196,7 +188,7 @@ public class ListOfRacesActivity extends Activity {
 		thread.setBearing("0");
 
 		thread.start();
-
+   		}
    		 
    		 
    		 Intent intent =new Intent(ListOfRacesActivity.this,MenuActivity.class);

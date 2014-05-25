@@ -50,7 +50,7 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 	private Marker currentPosition;
 	private List<Marker> sailorMarkers = new ArrayList<Marker>();
 	private GoogleMap googleMap;
-	private TextView tvLat, tvLng, tvUser, tvSpeed, tvDirection, tvEvent;
+	private TextView tvLat, tvLng, tvRaceStart, tvSpeed, tvDirection, tvEvent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +99,15 @@ public class MainActivity extends FragmentActivity implements LocationListener {
 		tvLng = (TextView) findViewById(R.id.tvLng);
 		tvSpeed = (TextView) findViewById(R.id.tvSpeed);
 		tvDirection = (TextView) findViewById(R.id.tvDirection);
-		tvUser = (TextView) findViewById(R.id.tvUser);
+		tvRaceStart = (TextView) findViewById(R.id.tvRaceStart);
 		tvEvent = (TextView) findViewById(R.id.tvEvent);
-		tvUser.setText(user.substring(6));
-		tvEvent.setText(event);
+		int index=event.indexOf("_");
+		if(index!=-1){
+		tvEvent.setText(event.substring(0, index+1));
+		tvRaceStart.setText(event.substring(index));
+		}
+		else{
+		tvEvent.setText(event);}
 
 		// Loads the buoy warning beep sound.
 		buoyBeep = MediaPlayer.create(this, R.raw.buoy_warning_beep);

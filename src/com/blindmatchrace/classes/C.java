@@ -9,6 +9,8 @@ import android.os.Environment;
 public class C {
 	//Start Time
 	public static int mYear, mMonth, mDay, mHour, mMinute;
+	public static final String Date="Date";
+	public static final String Time="Time";
 
 	// Location constants.
 	public static final long MIN_TIME = 3000;
